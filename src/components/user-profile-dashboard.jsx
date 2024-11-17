@@ -160,21 +160,7 @@ export default function UserProfileDashboard() {
 
       if (response) {
         toast.success('Address added successfully');
-        // Update addresses list without reloading
-        setAddresses((prevAddresses) => [...prevAddresses, response.address]);
-        // Reset tempAddress
-        setTempAddress({
-          street: '',
-          city: '',
-          state: '',
-          zipCode: '',
-          country: '',
-        });
-        // Reset form fields
-        reset({
-          username: user?.username,
-          email: user?.email,
-        });
+        fetchData(); // Refetch data to update addresses list
       } else {
         toast.error('Failed to add address');
       }
@@ -499,13 +485,13 @@ export default function UserProfileDashboard() {
                   ) : (
                     addresses.map((address) => (
                       <motion.li
-                        key={address.id}
+                        key={address?.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         className="bg-gray-100 p-4 rounded-lg">
                         <p className="font-semibold">
-                          {address.street}, {address.city}, {address.state}, {address.zipCode}, {address.country}
+                          {address?.street}, {address?.city}, {address?.state}, {address?.zipCode}, {address?.country}
                         </p>
                         <div className="mt-4 flex space-x-2">
                           <Button
