@@ -104,7 +104,7 @@ import { FaPinterest } from 'react-icons/fa';
 
 const FooterLink = ({ href, children }) => {
   return (
-    <Link href={href} className="text-gray-400 hover:text-white transition">
+    <Link href={href} className="text-gray-400 hover:text-white transition text-lg">
       {children}
     </Link>
   );
@@ -114,15 +114,15 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 py-10 text-gray-300">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap justify-between">
-          {/* Column 1: Logo and Company Info */}
-          <div className="mb-6 w-full sm:w-1/2 md:w-1/4">
-            <img src="/logo.jpeg" alt="Company Logo" className="mb-4 h-24 rounded-2xl" />
-            <p className="text-gray-400">Your e-commerce tagline or brief description here.</p>
-          </div>
-          {/* Column 2: Customer Service */}
-          <div className="mb-6 w-full sm:w-1/2 md:w-1/4">
-            <h3 className="mb-3 font-semibold text-white">Customer Service</h3>
+        <div className="flex items-start justify-between border-b-2 border-gray-200 pb-8">
+          <img src="/logo.jpeg" alt="Company Logo" className="mb-4 h-24 rounded-2xl" />
+          <p className="text-gray-400 w-1/2">
+            Discover the finest luxury jewelry collections, hand-crafted with precision and passion to enhance your elegance.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 pt-10">
+          <div className="pb-4">
+            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">Customer Service</h3>
             <ul>
               <li>
                 <FooterLink href="/contact">Contact Us</FooterLink>
@@ -130,9 +130,6 @@ const Footer = () => {
               <li>
                 <FooterLink href="/about">About Us</FooterLink>
               </li>
-              {/* <li><a href="#" className="text-gray-400 hover:text-white">Shipping Info</a></li> */}
-              {/* <li><a href="#" className="text-gray-400 hover:text-white">Order Tracking</a></li> */}
-              {/* <li><a href="#" className="text-gray-400 hover:text-white">FAQs</a></li> */}
               <li>
                 <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
               </li>
@@ -144,15 +141,9 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          {/* Column 3: Shop Links */}
-          <div className="mb-6 w-full sm:w-1/2 md:w-1/4">
-            <h3 className="mb-3 font-semibold text-white">Shop</h3>
+          <div className="pb-4">
+            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">Shop</h3>
             <ul>
-              {/* <li><a href="#" className="text-gray-400 hover:text-white">New Arrivals</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white">Best Sellers</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white">Sale</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white">Gift Cards</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white">Categories</a></li> */}
               <li>
                 <FooterLink href="/products">All Products</FooterLink>
               </li>
@@ -167,9 +158,42 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          {/* Column 4: About Us */}
-          <div className="mb-6 w-full sm:w-1/2 md:w-1/4">
-            <h3 className="mb-3 font-semibold text-white">About Us</h3>
+          <div className="pb-4">
+            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">Shop</h3>
+            <ul>
+              <li>
+                <FooterLink href="/products">All Products</FooterLink>
+              </li>
+              <li>
+                <FooterLink href="/products/jewelery/all">Jewelery</FooterLink>
+              </li>
+              <li>
+                <FooterLink href="/products/gemstone/all">Gemstone</FooterLink>
+              </li>
+              <li>
+                <FooterLink href="/suppliers">Suppliers</FooterLink>
+              </li>
+            </ul>
+          </div>
+          <div className="pb-4">
+            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">Shop</h3>
+            <ul>
+              <li>
+                <FooterLink href="/products">All Products</FooterLink>
+              </li>
+              <li>
+                <FooterLink href="/products/jewelery/all">Jewelery</FooterLink>
+              </li>
+              <li>
+                <FooterLink href="/products/gemstone/all">Gemstone</FooterLink>
+              </li>
+              <li>
+                <FooterLink href="/suppliers">Suppliers</FooterLink>
+              </li>
+            </ul>
+          </div>
+          <div className="pb-4">
+            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">About Us</h3>
             <ul>
               <li><a href="#" className="text-gray-400 hover:text-white">Our Story</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white">Careers</a></li>
@@ -177,9 +201,8 @@ const Footer = () => {
               <li><a href="#" className="text-gray-400 hover:text-white">Press</a></li>
             </ul>
           </div>
-          {/* Column 5: Follow Us */}
-          <div className="mb-6 w-full sm:w-1/2 md:w-1/4">
-            <h3 className="mb-3 font-semibold text-white">Follow Us</h3>
+          <div className="pb-4">
+            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">Follow Us</h3>
             <div className="flex space-x-4">
               {/* <a href="#" aria-label="Facebook" className="text-gray-400 hover:text-white">
                 <img src="path/to/facebook-icon.png" alt="Facebook" className="h-6 w-6" />
