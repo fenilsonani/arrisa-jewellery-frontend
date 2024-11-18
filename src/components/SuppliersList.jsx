@@ -36,7 +36,7 @@ export default function SuppliersList() {
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: 'https://api.glimmerwave.store/api/v1/suppliers/',
+            url: 'http://localhost:3005/api/v1/suppliers/',
             headers: {}
         };
 

@@ -41,7 +41,7 @@ export default function JProductComponent() {
     const fetchData = async () => {
       try {
         const productId = window.location.pathname.split('/').pop();
-        const url = `https://api.glimmerwave.store/api/v1/products/${productId}`;
+        const url = `http://localhost:3005/api/v1/products/${productId}`;
         const response = await axios.get(url);
         setProductData(response.data.product);
         setIsLoading(false)

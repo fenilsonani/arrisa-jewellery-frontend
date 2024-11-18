@@ -63,7 +63,7 @@ export default function SupportTicketManager() {
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: 'https://api.glimmerwave.store/api/v1/support/tickets',
+            url: 'http://localhost:3005/api/v1/support/tickets',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -91,7 +91,7 @@ export default function SupportTicketManager() {
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'https://api.glimmerwave.store/api/v1/support/tickets',
+            url: 'http://localhost:3005/api/v1/support/tickets',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -124,7 +124,7 @@ export default function SupportTicketManager() {
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: `https://api.glimmerwave.store/api/v1/support/admin/tickets/${ticketId}/responses`,
+            url: `http://localhost:3005/api/v1/support/admin/tickets/${ticketId}/responses`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`

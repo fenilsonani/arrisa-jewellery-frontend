@@ -75,7 +75,7 @@ export function AllBlogs() {
       let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: 'https://api.glimmerwave.store/api/v1/blog/',
+        url: 'http://localhost:3005/api/v1/blog/',
         headers: {
           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjY1NWMxOWI2NjQ1YTVjNjQ5OGM1YSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyNzU2NjUwMiwiZXhwIjoxNzI4MTcxMzAyfQ.CoJ9p3ylZLZNbyKfHq_B4u6tMndTx_hsALQCwBqW9JM'
         }

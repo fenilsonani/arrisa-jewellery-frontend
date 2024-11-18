@@ -10,7 +10,7 @@ const markdownToText = (markdown) => {
 export async function generateMetadata({ params }) {
     try {
         const config = {
-            url: 'https://api.glimmerwave.store/api/v1/blog/' + params.id,
+            url: 'http://localhost:3005/api/v1/blog/' + params.id,
             method: 'GET'
         };
         const response = await axios.get(config.url);

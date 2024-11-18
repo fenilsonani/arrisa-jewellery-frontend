@@ -122,7 +122,7 @@ const Footer = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 pt-10">
           <div className="pb-4">
-            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">Customer Service</h3>
+            <h3 className="mb-3 font-semibold text-white text-xl     border-t-[1px] md:border-0 border-gray-400 pt-3">Customer Service</h3>
             <ul>
               <li>
                 <FooterLink href="/contact">Contact Us</FooterLink>
@@ -142,7 +142,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="pb-4">
-            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">Shop</h3>
+            <h3 className="mb-3 font-semibold text-white text-xl     border-t-[1px] md:border-0 border-gray-400 pt-3">Shop</h3>
             <ul>
               <li>
                 <FooterLink href="/products">All Products</FooterLink>
@@ -159,7 +159,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="pb-4">
-            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">Shop</h3>
+            <h3 className="mb-3 font-semibold text-white text-xl     border-t-[1px] md:border-0 border-gray-400 pt-3">Shop</h3>
             <ul>
               <li>
                 <FooterLink href="/products">All Products</FooterLink>
@@ -176,7 +176,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="pb-4">
-            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">Shop</h3>
+            <h3 className="mb-3 font-semibold text-white text-xl     border-t-[1px] md:border-0 border-gray-400 pt-3">Shop</h3>
             <ul>
               <li>
                 <FooterLink href="/products">All Products</FooterLink>
@@ -193,7 +193,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="pb-4">
-            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">About Us</h3>
+            <h3 className="mb-3 font-semibold text-white text-xl     border-t-[1px] md:border-0 border-gray-400 pt-3">About Us</h3>
             <ul>
               <li><a href="#" className="text-gray-400 hover:text-white">Our Story</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white">Careers</a></li>
@@ -202,7 +202,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="pb-4">
-            <h3 className="mb-3 font-semibold text-white text-xl border-t-[1px] border-gray-400 pt-3">Follow Us</h3>
+            <h3 className="mb-3 font-semibold text-white text-xl     border-t-[1px] md:border-0 border-gray-400 pt-3">Follow Us</h3>
             <div className="flex space-x-4">
               {/* <a href="#" aria-label="Facebook" className="text-gray-400 hover:text-white">
                 <img src="path/to/facebook-icon.png" alt="Facebook" className="h-6 w-6" />

@@ -136,7 +136,7 @@ export function BlogDetails({ data }) {
   const fetchData = async () => {
     let config = {
       method: 'get',
-      url: 'https://api.glimmerwave.store/api/v1/blog/' + data,
+      url: 'http://localhost:3005/api/v1/blog/' + data,
     };
 
     await axios.request(config)
@@ -307,7 +307,7 @@ export function BlogDetails({ data }) {
                               let config = {
                                 method: 'post',
                                 maxBodyLength: Infinity,
-                                url: `https://api.glimmerwave.store/api/v1/blog/${data}/comments`,
+                                url: `http://localhost:3005/api/v1/blog/${data}/comments`,
                                 headers: {
                                   'Content-Type': 'application/json',
                                   'Authorization': `Bearer ${localStorage.getItem('token')}`

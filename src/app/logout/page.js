@@ -51,7 +51,7 @@ const Logout = () => {
     } */
     const logoutUser = async () => {
       try {
-        const response = await axios.post('https://api.glimmerwave.store/api/v1/users/logout', {}, {
+        const response = await axios.post('http://localhost:3005/api/v1/users/logout', {}, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }

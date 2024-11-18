@@ -1,9 +1,17 @@
 "use client"
 
-import { Sheet, SheetTrigger, SheetHeader, SheetFooter,SheetTitle, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetTrigger, SheetHeader, SheetFooter, SheetTitle, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { NavigationMenu, NavigationMenuList, NavigationMenuLink } from "@/components/ui/navigation-menu";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
@@ -275,7 +283,7 @@ export default function Navbar() {
             </Link>
 
             {/* Navigation links */}
-            <NavigationMenu>
+            {/*   <NavigationMenu>
               <NavigationMenuList>
                 {navItems.map((item) => (
                   <NavigationMenuLink asChild key={item.name}>
@@ -288,6 +296,44 @@ export default function Navbar() {
                     </Link>
                   </NavigationMenuLink>
                 ))}
+              </NavigationMenuList>
+            </NavigationMenu> */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <Link href="/" prefetch={true}>
+                    Home
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>Products</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                      <li>
+                        <Link href="/products/jewelery/all" prefetch={false} className="">
+                          Jewelry Products
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/products/gemstone/all" prefetch={false} className="">
+                          GemStone Products
+                        </Link>
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>Collection</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                      <li>
+                        <Link href="/products/jewelery/all" prefetch={false} className="">
+                          Jewelry Products
+                        </Link>
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>

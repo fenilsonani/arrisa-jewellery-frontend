@@ -21,7 +21,7 @@ const NewsLetterSignUP = () => {
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'https://api.glimmerwave.store/api/v1/users/newsletter/subscribe',
+            url: 'http://localhost:3005/api/v1/users/newsletter/subscribe',
             headers: {
                 'Content-Type': 'application/json'
             },

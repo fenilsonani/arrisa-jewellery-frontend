@@ -58,7 +58,7 @@ async function getGemstoneProduct(id) {
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
-    url: 'https://api.glimmerwave.store/api/v1/gemStones/' + id,
+    url: 'http://localhost:3005/api/v1/gemStones/' + id,
     headers: {}
   };
 
@@ -81,7 +81,7 @@ export function GemstoneProductDisplayComponent({
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isZoomed, setIsZoomed] = useState(false)
 
-  const shareUrl = `https://api.glimmerwave.store/gemstone/${productId}`
+  const shareUrl = `http://localhost:3005/gemstone/${productId}`
 
   useEffect(() => {
     async function fetchProduct() {

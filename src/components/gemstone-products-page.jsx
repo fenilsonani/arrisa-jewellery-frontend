@@ -57,7 +57,7 @@ export function GemStoneProducts() {
         sort = 'price_desc';
       }
 
-      const response = await axios.get('https://api.glimmerwave.store/api/v1/gemStones', {
+      const response = await axios.get('http://localhost:3005/api/v1/gemStones', {
         params: {
           page: pagination.page,
           limit: pagination.limit,

@@ -61,7 +61,7 @@ export function AuthPageComponent() {
   const onLoginSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post('https://api.glimmerwave.store/api/v1/users/login', data);
+      const response = await axios.post('http://localhost:3005/api/v1/users/login', data);
       toast.success('Logged in successfully', {
         duration: 3000,
         position: 'top-center',
@@ -80,7 +80,7 @@ export function AuthPageComponent() {
   const onSignupSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post('https://api.glimmerwave.store/api/v1/users/register', data);
+      const response = await axios.post('http://localhost:3005/api/v1/users/register', data);
       toast.success('Account created successfully. Please log in.', {
         duration: 3000,
         position: 'top-center',

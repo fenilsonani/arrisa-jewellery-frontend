@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 
 // Create an axios instance
 const apiClient = axios.create({
-    baseURL: 'https://api.glimmerwave.store/api/v1', // Base URL for your backend
+    baseURL: 'http://localhost:3005/api/v1', // Base URL for your backend
     maxBodyLength: Infinity, // Optional: for large requests, if needed
 });
 

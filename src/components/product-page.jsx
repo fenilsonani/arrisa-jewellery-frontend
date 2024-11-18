@@ -154,7 +154,7 @@ export default function JewelryProducts() {
       };
 
       const response = await axios.get(
-        'https://api.glimmerwave.store/api/v1/products',
+        'http://localhost:3005/api/v1/products',
         { params }
       );
 
