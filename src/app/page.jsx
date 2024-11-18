@@ -58,38 +58,6 @@ const faqs = [
   { id: 5, question: "How do I determine my ring size?", answer: "We offer a printable ring sizer on our website, or you can visit our store for a professional fitting." },
 ]
 
-// const features = [
-//   {
-//     name: 'Handcrafted Quality',
-//     description: 'Each piece is meticulously crafted by our expert artisans.',
-//     icon: Gem,
-//   },
-//   {
-//     name: 'Ethically Sourced',
-//     description: 'We ensure all our materials are responsibly and ethically sourced.',
-//     icon: Shield,
-//   },
-//   {
-//     name: 'Lifetime Warranty',
-//     description: 'We stand behind our products with a comprehensive lifetime warranty.',
-//     icon: Award,
-//   },
-//   {
-//     name: 'Free Shipping',
-//     description: 'Enjoy free shipping on all orders over $500.',
-//     icon: Truck,
-//   },
-//   {
-//     name: 'Easy Returns',
-//     description: '30-day hassle-free returns for your peace of mind.',
-//     icon: RefreshCw,
-//   },
-//   {
-//     name: 'Gift Wrapping',
-//     description: 'Complimentary gift wrapping available for all purchases.',
-//     icon: Gift,
-//   },
-// ]
 
 const customizationOptions = [
   { id: 'metal', name: 'Metal Type', options: ['Yellow Gold', 'White Gold', 'Rose Gold', 'Platinum'] },

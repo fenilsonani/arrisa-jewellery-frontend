@@ -57,15 +57,15 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <Analytics />
         <GoogleAnalytics gaId="G-SZSH16KVEK" />
-        <main>
-          <ScrollSmoother>
-            <TopHeadbar />
-            <Toaster />
-            <Navbar />
+        <ScrollSmoother>
+          <TopHeadbar />
+          <Toaster />
+          <Navbar />
+          <main className="min-h-screen">
             {children}
-            <Footer />
-          </ScrollSmoother>
-        </main>
+          </main>
+          <Footer />
+        </ScrollSmoother>
       </body>
     </html>
   );
