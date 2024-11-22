@@ -1,6 +1,13 @@
-"use client"
+"use client";
 
-import { Sheet, SheetTrigger, SheetHeader, SheetFooter, SheetTitle, SheetContent } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetContent,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -11,17 +18,21 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import toast from "react-hot-toast";
 import { ScrollArea } from "./ui/scroll-area";
 import { sendGAEvent } from "@next/third-parties/google";
 import { Separator } from "./ui/separator";
 import { Input } from "./ui/input";
 import { Plus, Minus, X } from "lucide-react";
-
 
 // Navigation items list
 const navItems = [
@@ -38,7 +49,11 @@ const navItems = [
 // NavLink Component for DRY
 function NavLink({ href, children }) {
   return (
-    <Link href={href} className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
+    <Link
+      href={href}
+      className="flex w-full items-center py-2 text-lg font-semibold"
+      prefetch={false}
+    >
       {children}
     </Link>
   );
@@ -47,17 +62,16 @@ function NavLink({ href, children }) {
 // Mock data for country and currency combinations
 const countryCurrencyMap = {
   "United States": "USD",
-  "India": "INR",
-  "Germany": "EUR",
-  "France": "EUR",
-  "United Kingdom": "GBP"
+  India: "INR",
+  Germany: "EUR",
+  France: "EUR",
+  "United Kingdom": "GBP",
 };
 
 // Get unique currencies from the countryCurrencyMap
 const uniqueCurrencies = [...new Set(Object.values(countryCurrencyMap))];
 
 export default function Navbar() {
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
   const [selectedCountry, setSelectedCountry] = useState("United States");
@@ -74,7 +88,9 @@ export default function Navbar() {
   };
 
   const handleCurrencyChange = (currency) => {
-    const linkedCountry = Object.keys(countryCurrencyMap).find(country => countryCurrencyMap[country] === currency);
+    const linkedCountry = Object.keys(countryCurrencyMap).find(
+      (country) => countryCurrencyMap[country] === currency
+    );
     if (linkedCountry !== selectedCountry) {
       setSelectedCurrency(currency);
       setSelectedCountry(linkedCountry);
@@ -84,17 +100,19 @@ export default function Navbar() {
   };
 
   const [cartItems, setCartItems] = useState([
-    { id: 1, name: 'T-Shirt', price: 19.99, quantity: 1 },
-    { id: 2, name: 'Jeans', price: 49.99, quantity: 1 },
-    { id: 3, name: 'Sneakers', price: 79.99, quantity: 1 },
+    { id: 1, name: "T-Shirt", price: 19.99, quantity: 1 },
+    { id: 2, name: "Jeans", price: 49.99, quantity: 1 },
+    { id: 3, name: "Sneakers", price: 79.99, quantity: 1 },
   ]);
-  const [couponCode, setCouponCode] = useState('');
+  const [couponCode, setCouponCode] = useState("");
 
   const updateQuantity = (id, change) => {
     setCartItems((items) =>
       items
         .map((item) =>
-          item.id === id ? { ...item, quantity: Math.max(0, item.quantity + change) } : item
+          item.id === id
+            ? { ...item, quantity: Math.max(0, item.quantity + change) }
+            : item
         )
         .filter((item) => item.quantity > 0)
     );
@@ -105,16 +123,16 @@ export default function Navbar() {
   };
 
   const applyCoupon = () => {
-    console.log('Applying coupon:', couponCode);
-    setCouponCode('');
+    console.log("Applying coupon:", couponCode);
+    setCouponCode("");
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
   const tax = subtotal * 0.1; // Assuming 10% tax
   const total = subtotal + tax;
-
-
-
 
   useEffect(() => {
     const checkAuth = () => {
@@ -122,19 +140,17 @@ export default function Navbar() {
       setIsAuthenticated(!!token);
     };
 
-    window.addEventListener('storage', checkAuth);
+    window.addEventListener("storage", checkAuth);
     checkAuth(); // Check on mount
 
-    return () => window.removeEventListener('storage', checkAuth);
+    return () => window.removeEventListener("storage", checkAuth);
   }, []);
 
   return (
     <header className="container mx-auto flex h-20 w-full shrink-0 items-center justify-between px-4 md:px-6">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
-
         {/* Sheet for mobile menu */}
         <div className="lg:hidden flex items-center justify-between w-full">
-
           {/* Logo in the middle for mobile */}
           <Link href="/" className="" prefetch={false}>
             <Image
@@ -182,16 +198,16 @@ export default function Navbar() {
               </DropdownMenu>
             ) : (
               <Link href="/auth" prefetch={false}>
-                <Button variant="outline" className="text-sm"
-                  onClick={
-                    () => {
-                      sendGAEvent({
-                        action: "click",
-                        category: "auth",
-                        label: "login/signup clicked on mobile"
-                      });
-                    }
-                  }
+                <Button
+                  variant="outline"
+                  className="text-sm"
+                  onClick={() => {
+                    sendGAEvent({
+                      action: "click",
+                      category: "auth",
+                      label: "login/signup clicked on mobile",
+                    });
+                  }}
                 >
                   Login / Signup
                 </Button>
@@ -199,16 +215,16 @@ export default function Navbar() {
             )}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon"
-                  onClick={
-                    () => {
-                      sendGAEvent({
-                        action: "click",
-                        category: "menu",
-                        label: "menu icon clicked on mobile"
-                      });
-                    }
-                  }
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    sendGAEvent({
+                      action: "click",
+                      category: "menu",
+                      label: "menu icon clicked on mobile",
+                    });
+                  }}
                 >
                   <MenuIcon className="h-6 w-6" />
                   <span className="sr-only">Toggle navigation menu</span>
@@ -235,7 +251,10 @@ export default function Navbar() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
                               {uniqueCurrencies.map((currency) => (
-                                <DropdownMenuItem key={currency} onClick={() => handleCurrencyChange(currency)}>
+                                <DropdownMenuItem
+                                  key={currency}
+                                  onClick={() => handleCurrencyChange(currency)}
+                                >
                                   {currency}
                                 </DropdownMenuItem>
                               ))}
@@ -251,11 +270,16 @@ export default function Navbar() {
                               {selectedCountry}
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                              {Object.keys(countryCurrencyMap).map((country) => (
-                                <DropdownMenuItem key={country} onClick={() => handleCountryChange(country)}>
-                                  {country}
-                                </DropdownMenuItem>
-                              ))}
+                              {Object.keys(countryCurrencyMap).map(
+                                (country) => (
+                                  <DropdownMenuItem
+                                    key={country}
+                                    onClick={() => handleCountryChange(country)}
+                                  >
+                                    {country}
+                                  </DropdownMenuItem>
+                                )
+                              )}
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>
@@ -310,12 +334,20 @@ export default function Navbar() {
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                       <li>
-                        <Link href="/products/jewelery/all" prefetch={false} className="">
+                        <Link
+                          href="/products/jewelery/all"
+                          prefetch={false}
+                          className=""
+                        >
                           Jewelry Products
                         </Link>
                       </li>
                       <li>
-                        <Link href="/products/gemstone/all" prefetch={false} className="">
+                        <Link
+                          href="/products/gemstone/all"
+                          prefetch={false}
+                          className=""
+                        >
                           GemStone Products
                         </Link>
                       </li>
@@ -327,8 +359,21 @@ export default function Navbar() {
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                       <li>
-                        <Link href="/products/jewelery/all" prefetch={false} className="">
-                          Jewelry Products
+                        <Link
+                          href="/collection/jewelery/all"
+                          prefetch={false}
+                          className=""
+                        >
+                          Jewelry Collections
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/collection/gemstone/all"
+                          prefetch={false}
+                          className=""
+                        >
+                          Gemstone Collections
                         </Link>
                       </li>
                     </ul>
@@ -353,31 +398,31 @@ export default function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem>
-                    <Link href="/profile" prefetch={false}
-                      onClick={
-                        () => {
-                          sendGAEvent({
-                            action: "click",
-                            category: "profile",
-                            label: "profile clicked"
-                          });
-                        }
-                      }
+                    <Link
+                      href="/profile"
+                      prefetch={false}
+                      onClick={() => {
+                        sendGAEvent({
+                          action: "click",
+                          category: "profile",
+                          label: "profile clicked",
+                        });
+                      }}
                     >
                       Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link href="/logout" prefetch={false}
-                      onClick={
-                        () => {
-                          sendGAEvent({
-                            action: "click",
-                            category: "auth",
-                            label: "logout clicked"
-                          });
-                        }
-                      }
+                    <Link
+                      href="/logout"
+                      prefetch={false}
+                      onClick={() => {
+                        sendGAEvent({
+                          action: "click",
+                          category: "auth",
+                          label: "logout clicked",
+                        });
+                      }}
                     >
                       Logout
                     </Link>
@@ -400,16 +445,23 @@ export default function Navbar() {
           </SheetHeader>
           <div className="flex-grow overflow-auto py-4">
             {cartItems.length === 0 ? (
-              <p className="text-center text-muted-foreground">Your cart is empty</p>
+              <p className="text-center text-muted-foreground">
+                Your cart is empty
+              </p>
             ) : (
               <div className="space-y-4">
                 {cartItems.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between">
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center space-x-4">
                       <div className="h-16 w-16 rounded bg-muted" />
                       <div>
                         <p className="font-medium">{item.name}</p>
-                        <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
+                        <p className="text-sm text-muted-foreground">
+                          ${item.price.toFixed(2)}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -471,7 +523,7 @@ export default function Navbar() {
           </div>
         </SheetContent>
       </Sheet>
-    </header >
+    </header>
   );
 }
 

@@ -1,39 +1,39 @@
 // app/products/jewelry/page.jsx
 
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from "@/components/ui/sheet";
 import {
   Select,
   SelectItem,
   SelectContent,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Search, Filter } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Skeleton } from '@/components/ui/skeleton';
-import axios from 'axios';
-import Link from 'next/link';
+} from "@/components/ui/accordion";
+import { Search, Filter } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Skeleton } from "@/components/ui/skeleton";
+import axios from "axios";
+import Link from "next/link";
 
 export default function JewelryProducts() {
   const router = useRouter();
@@ -42,7 +42,7 @@ export default function JewelryProducts() {
 
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState({
-    search: '',
+    search: "",
     priceRange: [0, 10000],
     minRating: 0,
     categories: [],
@@ -64,35 +64,35 @@ export default function JewelryProducts() {
     limit: 20,
     pages: 1,
   });
-  const [sortOption, setSortOption] = useState('default');
+  const [sortOption, setSortOption] = useState("default");
 
   const pageSizeOptions = [10, 20, 50, 100];
 
   // Function to parse query parameters into filter state
   const parseQueryParams = () => {
-    const page = searchParams.get('page');
-    const limit = searchParams.get('limit');
-    const search = searchParams.get('search');
-    const minRating = searchParams.get('minRating');
-    const categories = searchParams.get('categories');
-    const brands = searchParams.get('brands');
-    const materials = searchParams.get('materials');
-    const gemstoneTypes = searchParams.get('gemstoneTypes');
-    const priceMin = searchParams.get('priceMin');
-    const priceMax = searchParams.get('priceMax');
-    const sort = searchParams.get('sort');
+    const page = searchParams.get("page");
+    const limit = searchParams.get("limit");
+    const search = searchParams.get("search");
+    const minRating = searchParams.get("minRating");
+    const categories = searchParams.get("categories");
+    const brands = searchParams.get("brands");
+    const materials = searchParams.get("materials");
+    const gemstoneTypes = searchParams.get("gemstoneTypes");
+    const priceMin = searchParams.get("priceMin");
+    const priceMax = searchParams.get("priceMax");
+    const sort = searchParams.get("sort");
 
     setFilters({
-      search: search || '',
+      search: search || "",
       priceRange: [
         priceMin ? Number(priceMin) : 0,
         priceMax ? Number(priceMax) : 10000,
       ],
       minRating: minRating ? Number(minRating) : 0,
-      categories: categories ? categories.split(',') : [],
-      brands: brands ? brands.split(',') : [],
-      materials: materials ? materials.split(',') : [],
-      gemstoneTypes: gemstoneTypes ? gemstoneTypes.split(',') : [],
+      categories: categories ? categories.split(",") : [],
+      brands: brands ? brands.split(",") : [],
+      materials: materials ? materials.split(",") : [],
+      gemstoneTypes: gemstoneTypes ? gemstoneTypes.split(",") : [],
     });
 
     setPagination((prev) => ({
@@ -101,24 +101,32 @@ export default function JewelryProducts() {
       limit: limit ? Number(limit) : 20,
     }));
 
-    setSortOption(sort || 'default');
+    setSortOption(sort || "default");
   };
 
   // Update URL query parameters without reloading the page
   const updateURL = () => {
     const params = new URLSearchParams();
 
-    if (pagination.page !== 1) params.set('page', pagination.page.toString());
-    if (pagination.limit !== 20) params.set('limit', pagination.limit.toString());
-    if (filters.search) params.set('search', filters.search);
-    if (filters.minRating > 0) params.set('minRating', filters.minRating.toString());
-    if (filters.categories.length > 0) params.set('categories', filters.categories.join(','));
-    if (filters.brands.length > 0) params.set('brands', filters.brands.join(','));
-    if (filters.materials.length > 0) params.set('materials', filters.materials.join(','));
-    if (filters.gemstoneTypes.length > 0) params.set('gemstoneTypes', filters.gemstoneTypes.join(','));
-    if (filters.priceRange[0] > 0) params.set('priceMin', filters.priceRange[0].toString());
-    if (filters.priceRange[1] < 10000) params.set('priceMax', filters.priceRange[1].toString());
-    if (sortOption !== 'default') params.set('sort', sortOption);
+    if (pagination.page !== 1) params.set("page", pagination.page.toString());
+    if (pagination.limit !== 20)
+      params.set("limit", pagination.limit.toString());
+    if (filters.search) params.set("search", filters.search);
+    if (filters.minRating > 0)
+      params.set("minRating", filters.minRating.toString());
+    if (filters.categories.length > 0)
+      params.set("categories", filters.categories.join(","));
+    if (filters.brands.length > 0)
+      params.set("brands", filters.brands.join(","));
+    if (filters.materials.length > 0)
+      params.set("materials", filters.materials.join(","));
+    if (filters.gemstoneTypes.length > 0)
+      params.set("gemstoneTypes", filters.gemstoneTypes.join(","));
+    if (filters.priceRange[0] > 0)
+      params.set("priceMin", filters.priceRange[0].toString());
+    if (filters.priceRange[1] < 10000)
+      params.set("priceMax", filters.priceRange[1].toString());
+    if (sortOption !== "default") params.set("sort", sortOption);
 
     const newUrl = `${pathname}?${params.toString()}`;
 
@@ -135,28 +143,34 @@ export default function JewelryProducts() {
         minRating: filters.minRating > 0 ? filters.minRating : undefined,
         categories:
           filters.categories.length > 0
-            ? filters.categories.join(',')
+            ? filters.categories.join(",")
             : undefined,
         brands:
-          filters.brands.length > 0 ? filters.brands.join(',') : undefined,
+          filters.brands.length > 0 ? filters.brands.join(",") : undefined,
         materials:
           filters.materials.length > 0
-            ? filters.materials.join(',')
+            ? filters.materials.join(",")
             : undefined,
         gemstoneTypes:
           filters.gemstoneTypes.length > 0
-            ? filters.gemstoneTypes.join(',')
+            ? filters.gemstoneTypes.join(",")
             : undefined,
         priceMin: filters.priceRange[0] > 0 ? filters.priceRange[0] : undefined,
         priceMax:
           filters.priceRange[1] < 10000 ? filters.priceRange[1] : undefined,
-        sort: sortOption !== 'default' ? sortOption : undefined,
+        sort: sortOption !== "default" ? sortOption : undefined,
       };
 
       const response = await axios.get(
-        'http://localhost:3005/api/v1/products',
+        "http://localhost:3005/api/v1/products",
         { params }
       );
+      const col = await axios.get(
+        "http://localhost:3005/api/v1/collections",
+        { params }
+      );
+      console.log("col: 336", col, "\nparams 336", params);
+      console.log("Response: 336", response, "\nparams 336", params);
 
       setProducts(response.data.products);
       setFilterOptions({
@@ -172,7 +186,7 @@ export default function JewelryProducts() {
       }));
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
       setLoading(false);
     }
   };
@@ -217,7 +231,7 @@ export default function JewelryProducts() {
 
   const resetFilters = () => {
     setFilters({
-      search: '',
+      search: "",
       priceRange: [0, 10000],
       minRating: 0,
       categories: [],
@@ -226,7 +240,7 @@ export default function JewelryProducts() {
       gemstoneTypes: [],
     });
     setPagination((prev) => ({ ...prev, page: 1 }));
-    setSortOption('default');
+    setSortOption("default");
     setIsFilterOpen(false);
   };
 
@@ -322,15 +336,14 @@ export default function JewelryProducts() {
               >
                 <img
                   src={
-                    product.images[0] || 'https://picsum.photos/300/200?random=100'
+                    product.images[0] ||
+                    "https://picsum.photos/300/200?random=100"
                   }
                   alt={product.name}
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold mb-2">
-                    {product.name}
-                  </h3>
+                  <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
                   <p className="text-sm text-gray-600 mb-2">{product.type}</p>
                   <p className="text-lg font-bold mb-2">
                     ${(product.price || 0).toFixed(2)}
@@ -353,7 +366,7 @@ export default function JewelryProducts() {
                       <ul className="list-disc list-inside">
                         {product.materials.map((mat, index) => (
                           <li key={index}>
-                            {mat.materialId.name} - {mat.weight}{' '}
+                            {mat.materialId.name} - {mat.weight}{" "}
                             {mat.weightUnit}
                           </li>
                         ))}
@@ -364,10 +377,11 @@ export default function JewelryProducts() {
                     {[...Array(5)].map((_, i) => (
                       <svg
                         key={i}
-                        className={`w-4 h-4 ${i < Math.round(product.averageRating)
-                          ? 'text-yellow-400 fill-current'
-                          : 'text-gray-300'
-                          }`}
+                        className={`w-4 h-4 ${
+                          i < Math.round(product.averageRating)
+                            ? "text-yellow-400 fill-current"
+                            : "text-gray-300"
+                        }`}
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -376,7 +390,7 @@ export default function JewelryProducts() {
                       </svg>
                     ))}
                     <span className="ml-2 text-sm text-gray-600">
-                      ({product.averageRating?.toFixed(1) || 'N/A'})
+                      ({product.averageRating?.toFixed(1) || "N/A"})
                     </span>
                   </div>
                   <Link href={`/products/jewelery/${product._id}`} passHref>
@@ -416,10 +430,10 @@ export default function JewelryProducts() {
         </div>
         <SheetContent className="w-[calc(100%-2rem)]">
           <motion.div
-            initial={{ x: '100%' }}
+            initial={{ x: "100%" }}
             animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'tween' }}
+            exit={{ x: "100%" }}
+            transition={{ type: "tween" }}
             className=""
           >
             <SheetHeader>
@@ -429,13 +443,13 @@ export default function JewelryProducts() {
               <Accordion
                 type="multiple"
                 defaultValue={[
-                  'search',
-                  'price',
-                  'rating',
-                  'category',
-                  'brand',
-                  'material',
-                  'gemstoneTypes',
+                  "search",
+                  "price",
+                  "rating",
+                  "category",
+                  "brand",
+                  "material",
+                  "gemstoneTypes",
                 ]}
                 className="w-full"
               >
@@ -449,7 +463,7 @@ export default function JewelryProducts() {
                         placeholder="Search products..."
                         value={filters.search}
                         onChange={(e) =>
-                          handleFilterChange('search', e.target.value)
+                          handleFilterChange("search", e.target.value)
                         }
                         className="pl-8"
                       />
@@ -466,7 +480,7 @@ export default function JewelryProducts() {
                       step={100}
                       value={filters.priceRange}
                       onValueChange={(value) =>
-                        handleFilterChange('priceRange', value)
+                        handleFilterChange("priceRange", value)
                       }
                       className="mt-2"
                     />
@@ -483,7 +497,7 @@ export default function JewelryProducts() {
                     <Select
                       value={filters.minRating.toString()}
                       onValueChange={(value) =>
-                        handleFilterChange('minRating', Number(value))
+                        handleFilterChange("minRating", Number(value))
                       }
                     >
                       <SelectTrigger>
@@ -493,8 +507,10 @@ export default function JewelryProducts() {
                         {[0, 1, 2, 3, 4, 5].map((rating) => (
                           <SelectItem key={rating} value={rating.toString()}>
                             {rating === 0
-                              ? 'Any'
-                              : `${rating} star${rating > 1 ? 's' : ''} and above`}
+                              ? "Any"
+                              : `${rating} star${
+                                  rating > 1 ? "s" : ""
+                                } and above`}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -514,7 +530,7 @@ export default function JewelryProducts() {
                           <Checkbox
                             checked={filters.categories.includes(category)}
                             onCheckedChange={() =>
-                              handleCheckboxChange('categories', category)
+                              handleCheckboxChange("categories", category)
                             }
                           />
                           {category}
@@ -536,7 +552,7 @@ export default function JewelryProducts() {
                           <Checkbox
                             checked={filters.brands.includes(brand)}
                             onCheckedChange={() =>
-                              handleCheckboxChange('brands', brand)
+                              handleCheckboxChange("brands", brand)
                             }
                           />
                           {brand}
@@ -558,7 +574,7 @@ export default function JewelryProducts() {
                           <Checkbox
                             checked={filters.materials.includes(material)}
                             onCheckedChange={() =>
-                              handleCheckboxChange('materials', material)
+                              handleCheckboxChange("materials", material)
                             }
                           />
                           {material}
@@ -580,7 +596,7 @@ export default function JewelryProducts() {
                           <Checkbox
                             checked={filters.gemstoneTypes.includes(gemType)}
                             onCheckedChange={() =>
-                              handleCheckboxChange('gemstoneTypes', gemType)
+                              handleCheckboxChange("gemstoneTypes", gemType)
                             }
                           />
                           {gemType}
