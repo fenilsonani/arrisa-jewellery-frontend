@@ -1,6 +1,9 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation' // For Next.js 13+ with app directory
+// For Next.js versions prior to 13 or using pages directory, use:
+// import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,9 +22,13 @@ import { Search, Filter as FilterIcon } from 'lucide-react'
 import { Skeleton } from "@/components/ui/skeleton"
 import axios from 'axios'
 import Link from 'next/link'
+import qs from 'qs' // Install this package for query string manipulation: npm install qs
 
 export function GemStoneProducts() {
-  const [gemstones, setGemstones] = useState([])
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const [gemstoneProducts, setGemstoneProducts] = useState([])
   const [filters, setFilters] = useState({
     search: '',
     type: 'all',
@@ -44,49 +51,139 @@ export function GemStoneProducts() {
     pages: 1
   })
   const [sortOption, setSortOption] = useState('default')
+  const [error, setError] = useState(null)
 
   const pageSizeOptions = [10, 20, 50, 100] // Define page size options
 
+  // Ideally, store this in environment variables for flexibility
+  const API_URL = 'http://localhost:3005/api/v1/gemstoneProducts'
+
+  // Function to parse query parameters and set state accordingly
+  const initializeFiltersFromURL = () => {
+    const params = qs.parse(searchParams.toString())
+    const {
+      search = '',
+      type = 'all',
+      origin = 'all',
+      clarity = 'all',
+      colorGrade = 'all',
+      sort = 'default',
+      page = '1',
+      limit = '20',
+    } = params
+
+    setFilters({
+      search: Array.isArray(search) ? search[0] : search,
+      type: Array.isArray(type) ? type[0] : type,
+      origin: Array.isArray(origin) ? origin[0] : origin,
+      clarity: Array.isArray(clarity) ? clarity[0] : clarity,
+      colorGrade: Array.isArray(colorGrade) ? colorGrade[0] : colorGrade,
+    })
+
+    setSortOption(Array.isArray(sort) ? sort[0] : sort)
+    setPagination(prev => ({
+      ...prev,
+      page: parseInt(Array.isArray(page) ? page[0] : page, 10) || 1,
+      limit: parseInt(Array.isArray(limit) ? limit[0] : limit, 10) || 20,
+    }))
+  }
+
+  // Function to update URL based on current state
+  const updateURL = () => {
+    const query = {
+      search: filters.search || undefined,
+      type: filters.type !== 'all' ? filters.type : undefined,
+      origin: filters.origin !== 'all' ? filters.origin : undefined,
+      clarity: filters.clarity !== 'all' ? filters.clarity : undefined,
+      colorGrade: filters.colorGrade !== 'all' ? filters.colorGrade : undefined,
+      sort: sortOption !== 'default' ? sortOption : undefined,
+      page: pagination.page !== 1 ? pagination.page : undefined,
+      limit: pagination.limit !== 20 ? pagination.limit : undefined,
+    }
+
+    const queryString = qs.stringify(query, { addQueryPrefix: true, skipNulls: true, arrayFormat: 'brackets' })
+    router.push(`/products/gemstone/all/${queryString}`)
+  }
+
   const fetchGemstones = async () => {
-    setLoading(true);
+    setLoading(true)
+    setError(null)
     try {
-      let sort = undefined;
+      let sort = undefined
       if (sortOption === 'priceLowHigh') {
-        sort = 'price_asc';
+        sort = 'price_asc'
       } else if (sortOption === 'priceHighLow') {
-        sort = 'price_desc';
+        sort = 'price_desc'
       }
 
-      const response = await axios.get('http://localhost:3005/api/v1/gemStones', {
-        params: {
-          page: pagination.page,
-          limit: pagination.limit,
-          search: filters.search,
-          type: filters.type !== 'all' ? filters.type : undefined,
-          origin: filters.origin !== 'all' ? filters.origin : undefined,
-          clarity: filters.clarity !== 'all' ? filters.clarity : undefined,
-          colorGrade: filters.colorGrade !== 'all' ? filters.colorGrade : undefined,
-          sort,
-        }
-      })
+      // Prepare query parameters
+      const params = {
+        page: pagination.page,
+        limit: pagination.limit,
+        search: filters.search,
+        sort,
+      }
 
-      setGemstones(response.data.gemstones)
+      // Add filters only if they are not 'all'
+      if (filters.type !== 'all') params.type = filters.type
+      if (filters.origin !== 'all') params.origin = filters.origin
+      if (filters.clarity !== 'all') params.clarity = filters.clarity
+      if (filters.colorGrade !== 'all') params.colorGrade = filters.colorGrade
+
+      // Debugging: Log the parameters being sent
+      console.log('Fetching gemstones with params:', params)
+
+      const response = await axios.get(API_URL, { params })
+
+      // Debugging: Log the response data
+      console.log('Received response:', response.data)
+
+      setGemstoneProducts(response.data.gemstoneProducts)
       setFilterOptions(response.data.filterOptions) // Update filter options from the API response
-      setPagination({
-        ...pagination,
+      setPagination(prev => ({
+        ...prev,
         total: response.data.pagination.total,
         pages: response.data.pagination.pages,
-      })
+      }))
       setLoading(false)
     } catch (error) {
       console.error('Error fetching gemstones:', error)
+      setError('Failed to load gemstones. Please try again later.')
       setLoading(false)
     }
   }
 
+  // Initialize filters from URL on component mount
+  useEffect(() => {
+    initializeFiltersFromURL()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Fetch gemstones whenever filters, sortOption, page, or limit change
   useEffect(() => {
     fetchGemstones()
+    // Update the URL whenever relevant state changes
+    updateURL()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.page, pagination.limit, filters, sortOption])
+
+  // Listen to URL changes (e.g., browser back/forward) and update state
+  useEffect(() => {
+    const handleRouteChange = () => {
+      initializeFiltersFromURL()
+    }
+
+    // For Next.js 13+ with app directory, there's no event for route changes in useRouter
+    // Instead, use searchParams changes to trigger state updates
+    // This assumes that useSearchParams is reactive to URL changes
+    // If not, consider alternative approaches or use Next.js Router events if available
+
+    // Cleanup function
+    return () => {
+      // Remove event listeners if any
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }))
@@ -99,7 +196,20 @@ export function GemStoneProducts() {
   }
 
   const handlePageSizeChange = (value) => {
-    setPagination(prev => ({ ...prev, limit: parseInt(value), page: 1 }))
+    setPagination(prev => ({ ...prev, limit: parseInt(value, 10), page: 1 }))
+  }
+
+  const resetFilters = () => {
+    setFilters({
+      search: '',
+      type: 'all',
+      origin: 'all',
+      clarity: 'all',
+      colorGrade: 'all',
+    })
+    setSortOption('default')
+    setPagination(prev => ({ ...prev, page: 1, limit: 20 }))
+    setIsFilterOpen(false)
   }
 
   if (loading) {
@@ -137,6 +247,13 @@ export function GemStoneProducts() {
 
   return (
     <div className="container mx-auto p-4 min-h-screen">
+      {/* Error Message */}
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">
+          {error}
+        </div>
+      )}
+
       <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
           <h1 className="text-3xl font-bold mb-4 sm:mb-0">Luxury Gemstone Collection</h1>
@@ -168,6 +285,7 @@ export function GemStoneProducts() {
             </SheetTrigger>
           </div>
         </div>
+
         <div className="flex justify-between items-center mb-4">
           <p className="text-sm text-muted-foreground">{pagination.total} gemstones found</p>
           <div className="flex items-center space-x-2">
@@ -186,62 +304,82 @@ export function GemStoneProducts() {
             </Select>
           </div>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {gemstones.map(gemstone => (
-            <motion.div
-              key={gemstone._id}
-              layout
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bg-white rounded-lg shadow-md overflow-hidden">
-              <img
-                src={gemstone.images[0] || '/placeholder.svg?height=200&width=200'}
-                alt={gemstone.name}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2">{gemstone.name}</h3>
-                <p className="text-sm text-gray-600 mb-2">{gemstone.type}</p>
-                <p className="text-lg font-bold mb-2">
-                  ${(gemstone.pricePerCarat * gemstone.caratWeight).toFixed(2)}
-                </p>
-                <p className="text-sm">Origin: {gemstone.origin}</p>
-                <p className="text-sm">Clarity: {gemstone.clarity}</p>
-                <p className="text-sm">Color Grade: {gemstone.colorGrade}</p>
-                <p className="text-sm">Carat Weight: {gemstone.caratWeight}</p>
-                <p className="text-sm">Certification: {gemstone.certification.certifier}</p>
-                <Link
-                  href={`/products/gemstone/${gemstone._id}`}
-                  passHref>
-                  <Button
-                    className="w-full mt-4">
-                    View Details
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          ))}
+          {gemstoneProducts.length > 0 ? (
+            gemstoneProducts.map(product => {
+              const { gemstone } = product
+              return (
+                <motion.div
+                  key={product._id}
+                  layout
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-white rounded-lg shadow-md overflow-hidden">
+                  {product.image && product.image.length > 0 ? (
+                    <img
+                      src={product.image[0]}
+                      alt={gemstone.name}
+                      className="w-full h-48 object-cover"
+                    />
+                  ) : (
+                    <img
+                      src="/placeholder.svg"
+                      alt="Placeholder"
+                      className="w-full h-48 object-cover"
+                    />
+                  )}
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold mb-2">{gemstone.name}</h3>
+                    <p className="text-sm text-gray-600 mb-2">{gemstone.gemStoneType}</p>
+                    <p className="text-lg font-bold mb-2">
+                      ${product?.priceAfterDiscount?.toFixed(2)}
+                    </p>
+                    <p className="text-sm">Origin: {gemstone.origin}</p>
+                    <p className="text-sm">Clarity: {gemstone.clarity}</p>
+                    <p className="text-sm">Color Grade: {gemstone.colorGrade}</p>
+                    <p className="text-sm">Carat Weight: {gemstone.caratWeight}</p>
+                    <Link
+                      href={`/products/gemstone/${product._id}`}
+                      passHref>
+                      <Button
+                        className="w-full mt-4">
+                        View Details
+                      </Button>
+                    </Link>
+                  </div>
+                </motion.div>
+              )
+            })
+          ) : (
+            <p className="col-span-full text-center text-gray-500">No gemstones found.</p>
+          )}
         </div>
+
         {/* Pagination Controls */}
-        <div className="flex justify-center mt-8 items-center space-x-4">
-          <Button
-            onClick={() => setPagination(prev => ({ ...prev, page: Math.max(prev.page - 1, 1) }))}
-            disabled={pagination.page <= 1}
-          >
-            Previous
-          </Button>
-          <span className="mx-4">
-            Page {pagination.page} of {pagination.pages}
-          </span>
-          <Button
-            onClick={() => setPagination(prev => ({ ...prev, page: Math.min(prev.page + 1, pagination.pages) }))}
-            disabled={pagination.page >= pagination.pages}
-          >
-            Next
-          </Button>
-        </div>
+        {pagination.pages > 1 && (
+          <div className="flex justify-center mt-8 items-center space-x-4">
+            <Button
+              onClick={() => setPagination(prev => ({ ...prev, page: Math.max(prev.page - 1, 1) }))}
+              disabled={pagination.page <= 1}
+            >
+              Previous
+            </Button>
+            <span className="mx-4">
+              Page {pagination.page} of {pagination.pages}
+            </span>
+            <Button
+              onClick={() => setPagination(prev => ({ ...prev, page: Math.min(prev.page + 1, pagination.pages) }))}
+              disabled={pagination.page >= pagination.pages}
+            >
+              Next
+            </Button>
+          </div>
+        )}
+
+        {/* Filter Sheet Content */}
         <SheetContent
           className="w-[calc(100%-2rem)]">
           <motion.div
@@ -259,6 +397,7 @@ export function GemStoneProducts() {
                 type="multiple"
                 defaultValue={['search', 'type', 'origin', 'clarity', 'colorGrade']}
                 className="w-full">
+                {/* Search Filter */}
                 <AccordionItem value="search">
                   <AccordionTrigger>Search</AccordionTrigger>
                   <AccordionContent>
@@ -274,7 +413,7 @@ export function GemStoneProducts() {
                 </AccordionItem>
                 {/* Gemstone Type Filter */}
                 <AccordionItem value="type">
-                  <AccordionTrigger>Gemstone Type</AccordionTrigger>
+                  <AccordionTrigger>Type</AccordionTrigger>
                   <AccordionContent>
                     <Select
                       value={filters.type}
@@ -357,18 +496,11 @@ export function GemStoneProducts() {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-              <div className="mt-4 flex justify-end">
-                <Button onClick={() => {
-                  setFilters({
-                    search: '',
-                    type: 'all',
-                    origin: 'all',
-                    clarity: 'all',
-                    colorGrade: 'all',
-                  })
-                  setIsFilterOpen(false)
-                  setPagination(prev => ({ ...prev, page: 1 }))
-                }}>
+              <div className="mt-4 flex justify-end space-x-2">
+                <Button variant="ghost" onClick={() => setIsFilterOpen(false)}>
+                  Close
+                </Button>
+                <Button onClick={resetFilters}>
                   Reset Filters
                 </Button>
               </div>

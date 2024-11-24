@@ -129,7 +129,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="container mx-auto flex h-20 w-full shrink-0 items-center justify-between px-4 md:px-6">
+    <header className="container mx-auto flex h-20 w-full shrink-0 items-center justify-between px-4 md:px-6 border-b-2">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
 
         {/* Sheet for mobile menu */}
@@ -301,14 +301,16 @@ export default function Navbar() {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <Link href="/" prefetch={true}>
-                    Home
+                  <Link href="/" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Home
+                    </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Products</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                    <ul className="grid w-full gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                       <li>
                         <Link href="/products/jewelery/all" prefetch={false} className="">
                           Jewelry Products

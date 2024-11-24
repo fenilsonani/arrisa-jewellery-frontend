@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import ProductCard from '@/components/all-product-card';
 import {
   Sheet,
   SheetContent,
@@ -34,6 +35,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Skeleton } from '@/components/ui/skeleton';
 import axios from 'axios';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function JewelryProducts() {
   const router = useRouter();
@@ -311,79 +313,7 @@ export default function JewelryProducts() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product) => (
-              <motion.div
-                key={product._id}
-                layout
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
-              >
-                <img
-                  src={
-                    product.images[0] || 'https://picsum.photos/300/200?random=100'
-                  }
-                  alt={product.name}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold mb-2">
-                    {product.name}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-2">{product.type}</p>
-                  <p className="text-lg font-bold mb-2">
-                    ${(product.price || 0).toFixed(2)}
-                  </p>
-                  {product.gemstones && product.gemstones.length > 0 && (
-                    <div className="mb-2">
-                      <p className="text-sm font-semibold">Gemstones:</p>
-                      <ul className="list-disc list-inside">
-                        {product.gemstones.map((gem, index) => (
-                          <li key={index}>
-                            {gem.gemstoneId.name} - {gem.carat} ct
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {product.materials && product.materials.length > 0 && (
-                    <div className="mb-2">
-                      <p className="text-sm font-semibold">Materials:</p>
-                      <ul className="list-disc list-inside">
-                        {product.materials.map((mat, index) => (
-                          <li key={index}>
-                            {mat.materialId.name} - {mat.weight}{' '}
-                            {mat.weightUnit}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  <div className="flex items-center mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <svg
-                        key={i}
-                        className={`w-4 h-4 ${i < Math.round(product.averageRating)
-                          ? 'text-yellow-400 fill-current'
-                          : 'text-gray-300'
-                          }`}
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.916c.969 0 1.371 1.24.588 1.81l-3.977 2.89a1 1 0 00-.364 1.118l1.519 4.674c.3.921-.755 1.688-1.538 1.118l-3.977-2.89a1 1 0 00-1.175 0l-3.977 2.89c-.783.57-1.838-.197-1.538-1.118l1.519-4.674a1 1 0 00-.364-1.118L2.049 9.1c-.783-.57-.38-1.81.588-1.81h4.916a1 1 0 00.95-.69l1.519-4.674z" />
-                      </svg>
-                    ))}
-                    <span className="ml-2 text-sm text-gray-600">
-                      ({product.averageRating?.toFixed(1) || 'N/A'})
-                    </span>
-                  </div>
-                  <Link href={`/products/jewelery/${product._id}`} passHref>
-                    <Button className="w-full mt-4">View Details</Button>
-                  </Link>
-                </div>
-              </motion.div>
+              <ProductCard key={product._id} product={product} />
             ))}
           </div>
         )}

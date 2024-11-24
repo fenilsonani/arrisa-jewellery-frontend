@@ -25,6 +25,7 @@ import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import { ArrowRight } from 'lucide-react'
 import { ArrowLeft } from 'heroicons-react'
+import ProductCard from '@/components/all-product-card'
 
 export default function JProductComponent() {
   const [isLoading, setIsLoading] = useState(true)
@@ -36,6 +37,7 @@ export default function JProductComponent() {
   const [customizations, setCustomizations] = useState({ engraving: "", diamondQuality: "VS1", bandWidth: 2 })
   const [giftWrap, setGiftWrap] = useState(false)
   const [financingMonths, setFinancingMonths] = useState(12)
+  const [relatedProducts, setRelatedProducts] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,6 +46,7 @@ export default function JProductComponent() {
         const url = `http://localhost:3005/api/v1/products/${productId}`;
         const response = await axios.get(url);
         setProductData(response.data.product);
+        setRelatedProducts(response.data.relatedProducts);
         setIsLoading(false)
         setSelectedMaterial(response.data.product.materials[0]?.materialId);
       } catch (error) {
@@ -226,7 +229,7 @@ export default function JProductComponent() {
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-2">Select Material</h3>
-              <RadioGroup value={selectedMaterial} onValueChange={setSelectedMaterial} aria-labelledby="material-selection">
+              {/* <RadioGroup value={selectedMaterial} onValueChange={setSelectedMaterial} aria-labelledby="material-selection">
                 <div className="grid grid-cols-2 gap-2">
                   {
                     productData.materials && productData.materials.map((material) => (
@@ -241,7 +244,7 @@ export default function JProductComponent() {
                       </div>
                     ))}
                 </div>
-              </RadioGroup>
+              </RadioGroup> */}
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-2">Quantity</h3>
@@ -522,26 +525,10 @@ export default function JProductComponent() {
       {/* Related Products Section */}
       <section className="mt-12" aria-labelledby="related-products">
         <h2 className="text-2xl font-bold mb-4" id="related-products">Related Products</h2>
-        {productData.relatedProducts && productData.relatedProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {productData.relatedProducts.map((item) => (
-              <Card key={item.id}>
-                <CardContent className="p-4">
-                  <Image
-                    src={item.images[0]}
-                    alt={`${item.name} product image`}
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                    width={400}
-                    height={400}
-                    loading="lazy"
-                  />
-                  <h3 className="font-semibold">{item.name}</h3>
-                  <p className="text-gray-600">${item.basePrice.toFixed(2)}</p>
-                  <Button variant="outline" className="w-full mt-2" aria-label={`View details for ${item.name}`}>
-                    View Product
-                  </Button>
-                </CardContent>
-              </Card>
+        {relatedProducts && relatedProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {relatedProducts.map((item) => (
+              <ProductCard key={item._id} product={item} />
             ))}
           </div>
         ) : (
