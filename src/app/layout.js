@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ScrollSmoother from "@/components/SmoothScrollComponent";
+// import { CartProvider } from "react-use-cart";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import TopHeadbar from "@/components/top-header";
@@ -58,6 +59,7 @@ export default function RootLayout({ children }) {
         <Analytics />
         <GoogleAnalytics gaId="G-SZSH16KVEK" />
         <ScrollSmoother>
+          {/* <CartProvider> */}
           <TopHeadbar />
           <Toaster />
           <Navbar />
@@ -65,6 +67,7 @@ export default function RootLayout({ children }) {
             {children}
           </main>
           <Footer />
+          {/* </CartProvider> */}
         </ScrollSmoother>
       </body>
     </html>

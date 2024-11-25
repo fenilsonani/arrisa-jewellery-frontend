@@ -188,6 +188,9 @@ importers:
       react-use:
         specifier: ^17.5.1
         version: 17.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-use-cart:
+        specifier: ^1.14.0
+        version: 1.14.0(react@18.3.1)
       reading-time:
         specifier: ^1.5.0
         version: 1.5.0
@@ -2484,6 +2487,12 @@ packages:
     peerDependencies:
       react: '*'
       tslib: '*'
+
+  react-use-cart@1.14.0:
+    resolution: {integrity: sha512-Qd3booG4wFAB04zrVWyiV/nxB+pv/7l7zNJO7isquE1LKpNuGpOpCcmCVCut5YPDilEMemx33+/103anefcVWA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
 
   react-use@17.5.1:
     resolution: {integrity: sha512-LG/uPEVRflLWMwi3j/sZqR00nF6JGqTTDblkXK2nzXsIvij06hXl1V/MZIlwj1OKIQUtlh1l9jK8gLsRyCQxMg==}
@@ -5285,6 +5294,10 @@ snapshots:
     dependencies:
       react: 18.3.1
       tslib: 2.7.0
+
+  react-use-cart@1.14.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   react-use@17.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
