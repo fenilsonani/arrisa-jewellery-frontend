@@ -26,6 +26,7 @@ import {
   removeFromCart
 } from "@/app/actions/cart"
 import axios from "axios"
+import Link from "next/link"
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL + "/products/multipleIds"
 
@@ -242,7 +243,9 @@ export function SimplifiedCartUI() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full">Proceed to Checkout</Button>
+              <Link href="/checkout">
+                <Button className="w-full">Proceed to Checkout</Button>
+              </Link>
             </CardFooter>
           </Card>
 
