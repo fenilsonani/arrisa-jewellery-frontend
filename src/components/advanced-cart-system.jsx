@@ -1,35 +1,45 @@
-'use client';
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useRouter } from 'next/navigation';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ScrollArea } from './ui/scroll-area';
-import { toast } from 'react-toastify';
-import Cookies from 'js-cookie';
+"use client"
+import { useState, useEffect } from "react"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  getCart,
+  updateCartItemQuantity,
+  removeFromCart
+} from "@/app/actions/cart"
+import axios from "axios"
 
-// Coupon Schema
-const couponSchema = z.object({
-  code: z.string().min(1, "Coupon code cannot be empty"),
-});
+const API_URL = process.env.NEXT_PUBLIC_API_URL + "/products/multipleIds"
 
-function CartItem({ item, updateQuantity, removeItem }) {
+function CartItemRow({ item, updateQuantity, removeItem }) {
   return (
     <TableRow>
       <TableCell>
         <div className="flex items-center space-x-3">
           <Image
-            src={item.images?.[0] || '/placeholder-image.svg'}
+            src={item.images[0]}
             alt={item.name}
             width={50}
             height={50}
-            className="rounded-md"
+            className="rounded-md object-cover"
           />
           <span className="font-medium">{item.name}</span>
         </div>
@@ -39,7 +49,9 @@ function CartItem({ item, updateQuantity, removeItem }) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => updateQuantity(item._id, item.quantity - 1)}
+            onClick={() =>
+              updateQuantity(item._id, Math.max(1, item.quantity - 1))
+            }
           >
             -
           </Button>
@@ -47,7 +59,9 @@ function CartItem({ item, updateQuantity, removeItem }) {
             type="number"
             min="1"
             value={item.quantity}
-            onChange={(e) => updateQuantity(item._id, parseInt(e.target.value))}
+            onChange={e =>
+              updateQuantity(item._id, Math.max(1, parseInt(e.target.value)))
+            }
             className="w-16 text-center"
           />
           <Button
@@ -59,119 +73,106 @@ function CartItem({ item, updateQuantity, removeItem }) {
           </Button>
         </div>
       </TableCell>
-      <TableCell>${(item.basePrice / 100).toFixed(2)}</TableCell>
-      <TableCell>${((item.basePrice * item.quantity) / 100).toFixed(2)}</TableCell>
+      <TableCell>${item.basePrice.toFixed(2)}</TableCell>
+      <TableCell>${(item.basePrice * item.quantity).toFixed(2)}</TableCell>
       <TableCell>
-        <Button variant="destructive" size="sm" onClick={() => removeItem(item._id)}>
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => removeItem(item._id)}
+        >
           Remove
         </Button>
       </TableCell>
     </TableRow>
-  );
+  )
 }
 
-function CouponCode({ applyCoupon }) {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
-    resolver: zodResolver(couponSchema),
-  });
+export function SimplifiedCartUI() {
+  const [cartItems, setCartItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [couponCode, setCouponCode] = useState("")
+  const [discount, setDiscount] = useState(0)
 
-  const onSubmit = async (data) => {
-    await applyCoupon(data.code);
-    reset();
-  };
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-      <Label htmlFor="coupon">Coupon Code</Label>
-      <Input id="coupon" placeholder="Enter coupon code" {...register('code')} />
-      {errors.code && <p className="text-red-500 text-sm mt-1">{errors.code.message}</p>}
-      <Button type="submit">Apply Coupon</Button>
-    </form>
-  );
-}
-
-export function AdvancedCartSystemComponent() {
-  const [cartItems, setCartItems] = useState([]); // Array of product data with quantity
-  const [loading, setLoading] = useState(true);
-  const [discount, setDiscount] = useState(0);
-  const [coupon, setCoupon] = useState(null);
-
-  const router = useRouter();
-
-  // Function to get cart from cookies
-  const getCartFromCookies = () => {
-    const cart = Cookies.get('cart');
-    if (!cart) return [];
-    return JSON.parse(decodeURIComponent(cart));
-  };
-
-  // Function to update cart in cookies
-  const updateCartInCookies = (cart) => {
-    Cookies.set('cart', encodeURIComponent(JSON.stringify(cart)));
-  };
-
-  // Load cart items from cookies
-  const loadCartItems = () => {
-    setLoading(true);
-    const cart = getCartFromCookies(); // Array of product data with quantity
-    setLoading(false);
-  };
-
-  // Load cart items on component mount
   useEffect(() => {
-    loadCartItems();
-  }, []);
+    async function fetchCartItems() {
+      try {
+        // Get cart from server action
+        const cart = await getCart()
 
-  // Update quantity of a cart item
-  const updateQuantity = (productId, quantity) => {
-    if (quantity < 1) return;
-    const cart = getCartFromCookies();
-    const updatedCart = cart.map((item) =>
-      item._id === productId ? { ...item, quantity } : item
-    );
-    updateCartInCookies(updatedCart);
-    setCartItems(updatedCart);
-  };
+        // Extract product IDs from cart
+        const productIds = Object.keys(cart)
 
-  // Remove item from cart
-  const removeItem = (productId) => {
-    const cart = getCartFromCookies();
-    const updatedCart = cart.filter((item) => item._id !== productId);
-    updateCartInCookies(updatedCart);
-    setCartItems(updatedCart);
-  };
+        if (productIds.length > 0) {
+          // Fetch product details
+          const response = await axios.post(API_URL, { ids: productIds })
 
-  // Calculate subtotal
+          // Map products with their quantities
+          const tempCart = response.data.products.map(product => ({
+            ...product,
+            quantity: cart[product._id] || 1,
+            basePrice: product.basePrice
+          }))
+
+          setCartItems(tempCart)
+        }
+
+        setLoading(false)
+      } catch (error) {
+        console.error("Error fetching cart:", error)
+        setLoading(false)
+      }
+    }
+
+    fetchCartItems()
+  }, [])
+
+  const updateQuantity = async (id, quantity) => {
+    try {
+      // Update quantity via server action
+      await updateCartItemQuantity(id, quantity)
+
+      // Update local state
+      setCartItems(currentItems =>
+        currentItems.map(item =>
+          item._id === id ? { ...item, quantity } : item
+        )
+      )
+    } catch (error) {
+      console.error("Error updating quantity:", error)
+    }
+  }
+
+  const removeItem = async id => {
+    try {
+      // Remove item via server action
+      await removeFromCart(id)
+
+      // Update local state
+      setCartItems(currentItems => currentItems.filter(item => item._id !== id))
+    } catch (error) {
+      console.error("Error removing item:", error)
+    }
+  }
+
   const calculateSubtotal = () => {
-    return cartItems.reduce((acc, item) => acc + item.basePrice * item.quantity, 0);
-  };
+    return cartItems.reduce(
+      (acc, item) => acc + item.basePrice * item.quantity,
+      0
+    )
+  }
 
-  // Calculate total
-  const calculateTotal = () => {
-    const subtotal = calculateSubtotal();
-    return subtotal - discount;
-  };
-
-  // Proceed to checkout
-  const proceedToCheckout = () => {
-    router.push('/checkout');
-  };
-
-  // Apply coupon
-  const applyCoupon = async (code) => {
-    // Implement coupon validation logic here
-    // For demonstration, assume a flat $10 discount for any coupon code
-    setDiscount(1000); // $10.00 in cents
-    setCoupon(code);
-    toast.success(`Coupon code "${code}" applied successfully`);
-  };
+  const applyCoupon = () => {
+    // Simplified coupon logic
+    if (couponCode.toLowerCase() === "discount10") {
+      setDiscount(calculateSubtotal() * 0.1) // 10% discount
+    } else {
+      setDiscount(0)
+    }
+  }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p>Loading cart...</p>
-      </div>
-    );
+    return <div>Loading...</div>
   }
 
   return (
@@ -198,8 +199,8 @@ export function AdvancedCartSystemComponent() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {cartItems.map((item) => (
-                        <CartItem
+                      {cartItems.map(item => (
+                        <CartItemRow
                           key={item._id}
                           item={item}
                           updateQuantity={updateQuantity}
@@ -226,24 +227,22 @@ export function AdvancedCartSystemComponent() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>${(calculateSubtotal() / 100).toFixed(2)}</span>
+                  <span>${calculateSubtotal().toFixed(2)}</span>
                 </div>
-                {coupon && (
+                {discount > 0 && (
                   <div className="flex justify-between text-green-600">
-                    <span>Coupon ({coupon})</span>
-                    <span>-${(discount / 100).toFixed(2)}</span>
+                    <span>Discount</span>
+                    <span>-${discount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span>${(calculateTotal() / 100).toFixed(2)}</span>
+                  <span>${(calculateSubtotal() - discount).toFixed(2)}</span>
                 </div>
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full" onClick={proceedToCheckout}>
-                Proceed to Checkout
-              </Button>
+              <Button className="w-full">Proceed to Checkout</Button>
             </CardFooter>
           </Card>
 
@@ -253,11 +252,22 @@ export function AdvancedCartSystemComponent() {
               <CardTitle>Apply Coupon</CardTitle>
             </CardHeader>
             <CardContent>
-              <CouponCode applyCoupon={applyCoupon} />
+              <div className="space-y-2">
+                <Label htmlFor="coupon">Coupon Code</Label>
+                <div className="flex space-x-2">
+                  <Input
+                    id="coupon"
+                    placeholder="Enter coupon code"
+                    value={couponCode}
+                    onChange={e => setCouponCode(e.target.value)}
+                  />
+                  <Button onClick={applyCoupon}>Apply</Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
       </div>
     </div>
-  );
+  )
 }
