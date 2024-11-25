@@ -1,13 +1,13 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ScrollSmoother from "@/components/SmoothScrollComponent";
-// import { CartProvider } from "react-use-cart";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import TopHeadbar from "@/components/top-header";
 import { Analytics } from "@vercel/analytics/react"
 import { GoogleAnalytics } from '@next/third-parties/google'
-import { Toaster } from "@/components/ui/toaster";
+import { ReduxProvider } from "@/store/Provider";
+import { ToastContainer } from "react-toastify";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -58,17 +58,17 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <Analytics />
         <GoogleAnalytics gaId="G-SZSH16KVEK" />
-        <ScrollSmoother>
-          {/* <CartProvider> */}
+        {/* <ScrollSmoother> */}
+        <ReduxProvider>
           <TopHeadbar />
-          <Toaster />
           <Navbar />
           <main className="min-h-screen">
+            <ToastContainer position="bottom-right" />
             {children}
           </main>
           <Footer />
-          {/* </CartProvider> */}
-        </ScrollSmoother>
+        </ReduxProvider>
+        {/* </ScrollSmoother> */}
       </body>
     </html>
   );

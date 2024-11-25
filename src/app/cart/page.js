@@ -1,5 +1,7 @@
 import React from 'react';
 import { AdvancedCartSystemComponent } from '@/components/advanced-cart-system';
+import Cart from '@/components/Cart';
+import { ReduxProvider } from '@/store/Provider';
 
 export async function generateMetadata() {
     return {
@@ -32,10 +34,13 @@ export async function generateMetadata() {
     }
 }
 
-export default async function Cart() {
+export default async function CartPage() {
     return (
         <div>
-            <AdvancedCartSystemComponent />
+            <ReduxProvider>
+                {<AdvancedCartSystemComponent />}
+                {/* <Cart /> */}
+            </ReduxProvider>
         </div>
     );
 }

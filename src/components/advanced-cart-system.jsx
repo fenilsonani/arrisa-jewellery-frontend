@@ -1,32 +1,18 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useIntersection } from 'react-use';
-import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/navigation'; // For Next.js App Router
+import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, AlertCircle, Trash2, Plus, Minus } from 'lucide-react';
-import RecommendedProduct from './recomnded-product';
-import useCart from '../services/useCart'; // Use your actual path to useCart
 import { ScrollArea } from './ui/scroll-area';
-import { toast } from '@/hooks/use-toast';
-
-const schema = z.object({
-  email: z.string().email(),
-  name: z.string().min(2),
-  address: z.string().min(5),
-  city: z.string().min(2),
-  country: z.string().min(2),
-  postalCode: z.string().min(5),
-});
+import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 
 // Coupon Schema
 const couponSchema = z.object({
@@ -39,12 +25,13 @@ function CartItem({ item, updateQuantity, removeItem }) {
       <TableCell>
         <div className="flex items-center space-x-3">
           <Image
-            src={item.productId.images[0]}
-            alt={item.productId.name}
+            src={item.images?.[0] || '/placeholder-image.svg'}
+            alt={item.name}
             width={50}
             height={50}
-            className="rounded-md" />
-          <span className="font-medium">{item.productId.name}</span>
+            className="rounded-md"
+          />
+          <span className="font-medium">{item.name}</span>
         </div>
       </TableCell>
       <TableCell>
@@ -52,28 +39,31 @@ function CartItem({ item, updateQuantity, removeItem }) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => updateQuantity(item.productId._id, item.quantity - 1)}>
-            <Minus className="h-4 w-4" />
+            onClick={() => updateQuantity(item._id, item.quantity - 1)}
+          >
+            -
           </Button>
           <Input
             type="number"
             min="1"
             value={item.quantity}
-            onChange={(e) => updateQuantity(item.productId._id, parseInt(e.target.value))}
-            className="w-16 text-center" />
+            onChange={(e) => updateQuantity(item._id, parseInt(e.target.value))}
+            className="w-16 text-center"
+          />
           <Button
             variant="outline"
             size="sm"
-            onClick={() => updateQuantity(item.productId._id, item.quantity + 1)}>
-            <Plus className="h-4 w-4" />
+            onClick={() => updateQuantity(item._id, item.quantity + 1)}
+          >
+            +
           </Button>
         </div>
       </TableCell>
-      <TableCell>${(item.productId.price / 100).toFixed(2)}</TableCell>
-      <TableCell>${((item.productId.price * item.quantity) / 100).toFixed(2)}</TableCell>
+      <TableCell>${(item.basePrice / 100).toFixed(2)}</TableCell>
+      <TableCell>${((item.basePrice * item.quantity) / 100).toFixed(2)}</TableCell>
       <TableCell>
-        <Button variant="destructive" size="sm" onClick={() => removeItem(item.productId._id)}>
-          <Trash2 className="h-4 w-4" />
+        <Button variant="destructive" size="sm" onClick={() => removeItem(item._id)}>
+          Remove
         </Button>
       </TableCell>
     </TableRow>
@@ -101,116 +91,132 @@ function CouponCode({ applyCoupon }) {
 }
 
 export function AdvancedCartSystemComponent() {
-  const { cart, loading, addItemToCart, removeItem, updateQuantity } = useCart(); // Use cart hook
-  const [recommendedProducts, setRecommendedProducts] = useState([]);
-  const [giftWrapping, setGiftWrapping] = useState(false);
+  const [cartItems, setCartItems] = useState([]); // Array of product data with quantity
+  const [loading, setLoading] = useState(true);
   const [discount, setDiscount] = useState(0);
   const [coupon, setCoupon] = useState(null);
 
-  const router = useRouter(); // For navigation
+  const router = useRouter();
 
-  /* const fetchRecommendedProducts = async () => {
-
-  } */
-
-  /* useEffect(() => {
-    const loadRecommendedProducts = async () => {
-      try {
-        const recommended = await fetchRecommendedProducts();
-        setRecommendedProducts(recommended);
-      } catch (err) {
-        toast({
-          title: 'Error',
-          description: 'Failed to load recommended products',
-          status: 'destructive',
-        })
-      }
-    };
-
-    loadRecommendedProducts();
-  }, []); */
-
-  const calculateSubtotal = () => {
-    return cart?.items.reduce((total, item) => total + item.productId.price * item.quantity, 0) || 0;
+  // Function to get cart from cookies
+  const getCartFromCookies = () => {
+    const cart = Cookies.get('cart');
+    if (!cart) return [];
+    return JSON.parse(decodeURIComponent(cart));
   };
 
+  // Function to update cart in cookies
+  const updateCartInCookies = (cart) => {
+    Cookies.set('cart', encodeURIComponent(JSON.stringify(cart)));
+  };
+
+  // Load cart items from cookies
+  const loadCartItems = () => {
+    setLoading(true);
+    const cart = getCartFromCookies(); // Array of product data with quantity
+    setLoading(false);
+  };
+
+  // Load cart items on component mount
+  useEffect(() => {
+    loadCartItems();
+  }, []);
+
+  // Update quantity of a cart item
+  const updateQuantity = (productId, quantity) => {
+    if (quantity < 1) return;
+    const cart = getCartFromCookies();
+    const updatedCart = cart.map((item) =>
+      item._id === productId ? { ...item, quantity } : item
+    );
+    updateCartInCookies(updatedCart);
+    setCartItems(updatedCart);
+  };
+
+  // Remove item from cart
+  const removeItem = (productId) => {
+    const cart = getCartFromCookies();
+    const updatedCart = cart.filter((item) => item._id !== productId);
+    updateCartInCookies(updatedCart);
+    setCartItems(updatedCart);
+  };
+
+  // Calculate subtotal
+  const calculateSubtotal = () => {
+    return cartItems.reduce((acc, item) => acc + item.basePrice * item.quantity, 0);
+  };
+
+  // Calculate total
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
-    const wrapping = giftWrapping ? 500 : 0; // $5 for gift wrapping
-    return subtotal + wrapping - (discount || 0);
+    return subtotal - discount;
   };
 
+  // Proceed to checkout
   const proceedToCheckout = () => {
-    router.push('/checkout'); // Navigate to the checkout page
+    router.push('/checkout');
+  };
+
+  // Apply coupon
+  const applyCoupon = async (code) => {
+    // Implement coupon validation logic here
+    // For demonstration, assume a flat $10 discount for any coupon code
+    setDiscount(1000); // $10.00 in cents
+    setCoupon(code);
+    toast.success(`Coupon code "${code}" applied successfully`);
   };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <p>Loading cart...</p>
       </div>
     );
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Your Advanced Shopping Cart</h1>
+      <h1 className="text-3xl font-bold mb-8">Your Shopping Cart</h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Cart Items */}
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
               <CardTitle>Cart Items</CardTitle>
             </CardHeader>
             <CardContent>
-              <ScrollArea className="h-[400px]">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Product</TableHead>
-                      <TableHead>Quantity</TableHead>
-                      <TableHead>Price</TableHead>
-                      <TableHead>Total</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {cart?.items.map((item) => (
-                      <CartItem
-                        key={item.productId._id}
-                        item={item}
-                        updateQuantity={updateQuantity}
-                        removeItem={removeItem}
-                      />
-                    ))}
-                    {cart?.items.length === 0 && (
+              {cartItems.length > 0 ? (
+                <ScrollArea className="h-[400px]">
+                  <Table>
+                    <TableHeader>
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center py-8">
-                          Your cart is empty
-                        </TableCell>
+                        <TableHead>Product</TableHead>
+                        <TableHead>Quantity</TableHead>
+                        <TableHead>Price</TableHead>
+                        <TableHead>Total</TableHead>
+                        <TableHead>Actions</TableHead>
                       </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </ScrollArea>
-            </CardContent>
-          </Card>
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle>Recommended Products</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
-                {recommendedProducts.map(product => (
-                  <RecommendedProduct
-                    data={product}
-                    key={product.id}
-                    addToCart={() => addItemToCart(product.id, 1)}
-                  />
-                ))}
-              </div>
+                    </TableHeader>
+                    <TableBody>
+                      {cartItems.map((item) => (
+                        <CartItem
+                          key={item._id}
+                          item={item}
+                          updateQuantity={updateQuantity}
+                          removeItem={removeItem}
+                        />
+                      ))}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              ) : (
+                <p>Your cart is empty.</p>
+              )}
             </CardContent>
           </Card>
         </div>
+
+        {/* Order Summary */}
         <div>
           <Card>
             <CardHeader>
@@ -222,12 +228,6 @@ export function AdvancedCartSystemComponent() {
                   <span>Subtotal</span>
                   <span>${(calculateSubtotal() / 100).toFixed(2)}</span>
                 </div>
-                {giftWrapping && (
-                  <div className="flex justify-between">
-                    <span>Gift Wrapping</span>
-                    <span>$5.00</span>
-                  </div>
-                )}
                 {coupon && (
                   <div className="flex justify-between text-green-600">
                     <span>Coupon ({coupon})</span>
@@ -246,18 +246,14 @@ export function AdvancedCartSystemComponent() {
               </Button>
             </CardFooter>
           </Card>
+
+          {/* Apply Coupon */}
           <Card className="mt-4">
             <CardHeader>
               <CardTitle>Apply Coupon</CardTitle>
             </CardHeader>
             <CardContent>
-              <CouponCode applyCoupon={(code) => {
-                toast({
-                  title: 'Coupon applied',
-                  description: `Coupon code ${code} applied successfully`,
-                  status: 'success',
-                })
-              }} />
+              <CouponCode applyCoupon={applyCoupon} />
             </CardContent>
           </Card>
         </div>

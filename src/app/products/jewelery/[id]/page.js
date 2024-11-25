@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import Cookies from 'js-cookie'
+import { addItem } from '@/store/cartSlice'
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -26,6 +28,8 @@ import 'react-medium-image-zoom/dist/styles.css';
 import { ArrowRight } from 'lucide-react'
 import { ArrowLeft } from 'heroicons-react'
 import ProductCard from '@/components/all-product-card'
+import { toast } from '@/hooks/use-toast'
+import { AddToCartButton } from '@/components/AddToCartButton'
 
 export default function JProductComponent() {
   const [isLoading, setIsLoading] = useState(true)
@@ -38,6 +42,7 @@ export default function JProductComponent() {
   const [giftWrap, setGiftWrap] = useState(false)
   const [financingMonths, setFinancingMonths] = useState(12)
   const [relatedProducts, setRelatedProducts] = useState([])
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,6 +71,7 @@ export default function JProductComponent() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -279,10 +285,17 @@ export default function JProductComponent() {
               <Label htmlFor="gift-wrap">Add Gift Wrapping (+$25)</Label>
             </div>
             <div className="flex space-x-4">
-              <Button className="flex-1 text-lg py-6" aria-label="Add to Cart">
+              {/* <Button className="flex-1 text-lg py-6" aria-label="Add to Cart"
+                onClick={() => {
+                  const cart = Cookies.get('cart') ? JSON.parse(Cookies.get('cart')) : []
+                  Cookies.set('cart', JSON.stringify([...cart, { productId: productData._id, quantity }]))
+                  alert('Added to cart')
+                }}
+              >
                 <ShoppingCart className="w-5 h-5 mr-2" aria-hidden="true" />
                 Add to Cart
-              </Button>
+              </Button> */}
+              <AddToCartButton productId={productData._id} quantity={quantity} />
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -575,10 +588,9 @@ export default function JProductComponent() {
               <h3 className="font-bold">{productData.name}</h3>
               <p className="text-2xl font-bold">${customPrice.toFixed(2)}</p>
             </div>
-            <Button aria-label="Add to Cart">
-              <ShoppingCart className="w-4 h-4 mr-2" aria-hidden="true" />
-              Add to Cart
-            </Button>
+            <div className="flex items-center space-x-4">
+              <AddToCartButton productId={productData._id} quantity={quantity} />
+            </div>
           </div>
         )
       }
