@@ -20,6 +20,7 @@ import { Search, SortAsc, SortDesc, Sun, Moon, Rss } from 'lucide-react';
 import Masonry from 'react-masonry-css'
 import NewsLetterSignUP from './news-letter-signup';
 import Link from 'next/link';
+import axios from 'axios';
 
 // Mock data for blog posts
 const generateMockPosts = (count) => {
@@ -42,7 +43,7 @@ const generateMockPosts = (count) => {
 const mockPosts = generateMockPosts(100)
 
 export function AllBlogs() {
-  const [posts, setPosts] = useState()
+  const [posts, setPosts] = useState(generateMockPosts(100))
   const [filteredPosts, setFilteredPosts] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
@@ -69,16 +70,11 @@ export function AllBlogs() {
 
   useEffect(() => {
     const fetchBlogs = async () => {
-      // Here you would typically fetch data from an API
-      const axios = require('axios');
 
       let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: 'http://localhost:3005/api/v1/blog/',
-        headers: {
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjY1NWMxOWI2NjQ1YTVjNjQ5OGM1YSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyNzU2NjUwMiwiZXhwIjoxNzI4MTcxMzAyfQ.CoJ9p3ylZLZNbyKfHq_B4u6tMndTx_hsALQCwBqW9JM'
-        }
+        url: 'http://localhost:3005/api/v1/blog/'
       };
 
       axios.request(config)

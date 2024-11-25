@@ -228,4 +228,3 @@ export function BlogDetails({ data }) {
     </div>
   )
 }
-
