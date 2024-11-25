@@ -38,7 +38,7 @@ const navItems = [
 // NavLink Component for DRY
 function NavLink({ href, children }) {
   return (
-    <Link href={href} className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
+    <Link href={href} className="flex w-full items-center py-2 text-lg font-semibold" prefetch={true}>
       {children}
     </Link>
   );
@@ -149,7 +149,7 @@ export default function Navbar() {
         <div className="lg:hidden flex items-center justify-between w-full">
 
           {/* Logo in the middle for mobile */}
-          <Link href="/" className="" prefetch={false}>
+          <Link href="/" className="" prefetch={true}>
             <Image
               src="/header.svg"
               alt="Jewel Store"
@@ -182,19 +182,19 @@ export default function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem>
-                    <Link href="/profile" prefetch={false}>
+                    <Link href="/profile" prefetch={true}>
                       Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link href="/logout" prefetch={false}>
+                    <Link href="/logout" prefetch={true}>
                       Logout
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/auth" prefetch={false}>
+              <Link href="/auth" prefetch={true}>
                 <Button variant="outline" className="text-sm"
                   onClick={
                     () => {
@@ -285,7 +285,7 @@ export default function Navbar() {
         <div className="hidden lg:flex justify-between w-full items-center">
           <div className="flex items-center space-x-2">
             {/* Logo */}
-            <Link href="/" className="mr-6" prefetch={false}>
+            <Link href="/" className="mr-6" prefetch={true}>
               <Image
                 src="/header.svg"
                 alt="Jewel Store"
@@ -303,7 +303,7 @@ export default function Navbar() {
                     <Link
                       href={item.href}
                       className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-2 py-1 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50"
-                      prefetch={false}
+                      prefetch={true}
                     >
                       {item.name}
                     </Link>
@@ -325,12 +325,12 @@ export default function Navbar() {
                   <NavigationMenuContent>
                     <ul className="grid w-full gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                       <li>
-                        <Link href="/products/jewelery/all" prefetch={false} className="">
+                        <Link href="/products/jewelery/all" prefetch={true} className="">
                           Jewelry Products
                         </Link>
                       </li>
                       <li>
-                        <Link href="/products/gemstone/all" prefetch={false} className="">
+                        <Link href="/products/gemstone/all" prefetch={true} className="">
                           GemStone Products
                         </Link>
                       </li>
@@ -346,7 +346,7 @@ export default function Navbar() {
                         {
                           collections.map((collection) => (
                             <li>
-                              <Link href={`/collection/${collection.slug}`} prefetch={false} className="hover:underline">
+                              <Link href={`/collection/${collection.slug}`} prefetch={true} className="hover:underline">
                                 {collection.name}
                               </Link>
                             </li>
@@ -369,7 +369,7 @@ export default function Navbar() {
 
           {/* Cart and account buttons */}
           <div className="flex space-x-4">
-            <Link href="/cart" prefetch={false}>
+            <Link href="/cart" prefetch={true}>
               <CartIcon className="h-6 w-6" />
               <span className="sr-only">Cart</span>
             </Link>
@@ -382,7 +382,7 @@ export default function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem>
-                    <Link href="/profile" prefetch={false}
+                    <Link href="/profile" prefetch={true}
                       onClick={
                         () => {
                           sendGAEvent({
@@ -397,7 +397,7 @@ export default function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link href="/logout" prefetch={false}
+                    <Link href="/logout" prefetch={true}
                       onClick={
                         () => {
                           sendGAEvent({
@@ -414,7 +414,7 @@ export default function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/auth" prefetch={false}>
+              <Link href="/auth" prefetch={true}>
                 {/* <Button variant="outline" className="text-sm"> */}
                 Login / Signup
                 {/* </Button> */}
