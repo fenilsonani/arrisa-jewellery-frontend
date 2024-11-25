@@ -62,6 +62,7 @@ export default function Navbar() {
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
   const [selectedCountry, setSelectedCountry] = useState("United States");
   const [isOpen, setIsOpen] = useState(false);
+  const [collections, setCollections] = useState([]);
 
   const handleCountryChange = (country) => {
     const linkedCurrency = countryCurrencyMap[country];
@@ -126,6 +127,18 @@ export default function Navbar() {
     checkAuth(); // Check on mount
 
     return () => window.removeEventListener('storage', checkAuth);
+  }, []);
+
+  useEffect(() => {
+    const fetchCollections = async () => {
+      const apiURL = process.env.NEXT_PUBLIC_API_URL + "/home/navbar-data";
+      await fetch(apiURL).then((res) => res.json()).then((data) => {
+        setCollections(data.collections);
+      }).catch((err) => {
+        console.error("Error fetching collections: ", err);
+      });
+    }
+    fetchCollections();
   }, []);
 
   return (
@@ -328,13 +341,27 @@ export default function Navbar() {
                   <NavigationMenuTrigger>Collection</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                      <li>
-                        <Link href="/products/jewelery/all" prefetch={false} className="">
-                          Jewelry Products
-                        </Link>
-                      </li>
+                      <span className="col-span-1 flex flex-col gap-2">
+                        <h3 className="text-lg font-semibold">Collections</h3>
+                        {
+                          collections.map((collection) => (
+                            <li>
+                              <Link href={`/collection/${collection.slug}`} prefetch={false} className="hover:underline">
+                                {collection.name}
+                              </Link>
+                            </li>
+                          ))
+                        }
+                      </span>
                     </ul>
                   </NavigationMenuContent>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="/blog/all" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Blog
+                    </NavigationMenuLink>
+                  </Link>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
