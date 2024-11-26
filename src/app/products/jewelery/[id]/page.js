@@ -214,10 +214,6 @@ export default function JProductComponent() {
                     <dd>{productData.sku}</dd>
                   </div>
                   <div>
-                    <dt className="font-semibold">Dimensions</dt>
-                    <dd>{productData.dimensions?.length}x{productData.dimensions?.width}x{productData.dimensions?.height} {productData.dimensions?.unit}</dd>
-                  </div>
-                  <div>
                     <dt className="font-semibold">Customizable</dt>
                     <dd>{productData.customizable ? 'Yes' : 'No'}</dd>
                   </div>

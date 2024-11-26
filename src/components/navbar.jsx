@@ -89,30 +89,8 @@ export default function Navbar() {
     { id: 2, name: 'Jeans', price: 49.99, quantity: 1 },
     { id: 3, name: 'Sneakers', price: 79.99, quantity: 1 },
   ]);
-  const [couponCode, setCouponCode] = useState('');
 
-  const updateQuantity = (id, change) => {
-    setCartItems((items) =>
-      items
-        .map((item) =>
-          item.id === id ? { ...item, quantity: Math.max(0, item.quantity + change) } : item
-        )
-        .filter((item) => item.quantity > 0)
-    );
-  };
 
-  const removeItem = (id) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
-
-  const applyCoupon = () => {
-    console.log('Applying coupon:', couponCode);
-    setCouponCode('');
-  };
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const tax = subtotal * 0.1; // Assuming 10% tax
-  const total = subtotal + tax;
 
 
 
@@ -161,17 +139,11 @@ export default function Navbar() {
 
           {/* Cart and account button on the right for mobile */}
           <div className="flex items-center space-x-2">
-            <SheetTrigger asChild>
+            <Link href="/cart" prefetch={true}>
               <Button variant="outline" size="icon" className="relative">
                 <CartIcon className="h-4 w-4" />
-                {cartItems.length > 0 && (
-                  <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-primary text-xs text-primary-foreground flex items-center justify-center">
-                    {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-                  </span>
-                )}
               </Button>
-            </SheetTrigger>
-
+            </Link>
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger>
@@ -295,22 +267,6 @@ export default function Navbar() {
               />
             </Link>
 
-            {/* Navigation links */}
-            {/*   <NavigationMenu>
-              <NavigationMenuList>
-                {navItems.map((item) => (
-                  <NavigationMenuLink asChild key={item.name}>
-                    <Link
-                      href={item.href}
-                      className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-2 py-1 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50"
-                      prefetch={true}
-                    >
-                      {item.name}
-                    </Link>
-                  </NavigationMenuLink>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu> */}
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
@@ -422,83 +378,6 @@ export default function Navbar() {
             )}
           </div>
         </div>
-
-        <SheetContent className="w-full sm:max-w-lg flex flex-col">
-          <SheetHeader>
-            <SheetTitle>Shopping Cart</SheetTitle>
-          </SheetHeader>
-          <div className="flex-grow overflow-auto py-4">
-            {cartItems.length === 0 ? (
-              <p className="text-center text-muted-foreground">Your cart is empty</p>
-            ) : (
-              <div className="space-y-4">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="h-16 w-16 rounded bg-muted" />
-                      <div>
-                        <p className="font-medium">{item.name}</p>
-                        <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => updateQuantity(item.id, -1)}
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="w-8 text-center">{item.quantity}</span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => updateQuantity(item.id, 1)}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive"
-                        onClick={() => removeItem(item.id)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="space-y-4">
-            <Separator />
-            <div className="flex items-center justify-between">
-              <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Tax</span>
-              <span>${tax.toFixed(2)}</span>
-            </div>
-            <Separator />
-            <div className="flex items-center justify-between font-medium">
-              <span>Total</span>
-              <span>${total.toFixed(2)}</span>
-            </div>
-            <div className="flex space-x-2">
-              <Input
-                placeholder="Coupon code"
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value)}
-              />
-              <Button onClick={applyCoupon}>Apply</Button>
-            </div>
-            <Button className="w-full">Checkout</Button>
-          </div>
-        </SheetContent>
       </Sheet>
     </header >
   );
