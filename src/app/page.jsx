@@ -354,7 +354,7 @@ export default function HomePage() {
 
 
         {/* 5. Custom Jewelry Designer */}
-        <section className="py-16 sm:py-24">
+        {/*   <section className="py-16 sm:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl font-extrabold text-center text-gray-900 sm:text-4xl mb-12">
               Design Your Own Jewelry
@@ -395,7 +395,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Top Rate  */}
         {

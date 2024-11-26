@@ -104,7 +104,7 @@ import { FaPinterest } from 'react-icons/fa';
 
 const FooterLink = ({ href, children }) => {
   return (
-    <Link href={href} className="text-gray-400 hover:text-white transition text-lg">
+    <Link href={href} className="text-gray-400 hover:text-white transition text-lg hover:underline">
       {children}
     </Link>
   );
