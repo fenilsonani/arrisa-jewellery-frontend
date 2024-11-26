@@ -482,7 +482,6 @@ export default function CheckoutPage() {
             <div className="mb-4 space-y-1">
               <label className="block font-medium mb-1">Shipping Address</label>
               <Select onValueChange={(value) => {
-                toast.info(`Selected address: ${value}`);
                 setSelectedAddress(value);
               }}>
                 <SelectTrigger>
