@@ -131,13 +131,17 @@ const Footer = () => {
                 <FooterLink href="/about">About Us</FooterLink>
               </li>
               <li>
-                <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
+                <FooterLink href="/terms-and-condition">Terms and Conditions</FooterLink>
               </li>
               <li>
-                <FooterLink href="/terms-of-service">Terms of Service</FooterLink>
+                <FooterLink href="/support/general">
+                  Support
+                </FooterLink>
               </li>
               <li>
-                <FooterLink href="/refund-policy">Refund Policy</FooterLink>
+                <FooterLink href="/support/tickets">
+                  Support Ticket
+                </FooterLink>
               </li>
             </ul>
           </div>
