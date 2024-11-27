@@ -57,19 +57,34 @@ const SHIPPING_OPTIONS = [
     id: 'standard',
     name: 'Standard Shipping',
     price: 0, // in cents
-    estimatedDays: '5-7 business days'
+    amount: 0,
+    estimatedDays: '5-7 business days',
+    estimate: {
+      min: 3,
+      max: 5,
+    },
   },
   {
     id: 'express',
     name: 'Express Shipping',
     price: 1500, // in cents
-    estimatedDays: '2-3 business days'
+    estimatedDays: '2-3 business days',
+    amount: 1500,
+    estimate: {
+      min: 2,
+      max: 3,
+    },
   },
   {
     id: 'overnight',
     name: 'Overnight Shipping',
     price: 2500, // in cents
-    estimatedDays: 'Next business day'
+    estimatedDays: 'Next business day',
+    amount: 2500,
+    estimate: {
+      min: 1,
+      max: 1,
+    },
   }
 ];
 
@@ -210,6 +225,11 @@ export default function CheckoutPage() {
         {
           lineItems,
           paymentMethod,
+          shippingAddress: selectedAddress,
+          shippingMethod,
+          userId: user._id,
+          email: user.email,
+          username: user.username,
         },
         {
           headers: {
@@ -478,6 +498,34 @@ export default function CheckoutPage() {
             <CardTitle>Checkout Details</CardTitle>
           </CardHeader>
           <CardContent>
+            {/* User Details */}
+            <div className="mb-4">
+              <h2 className="text-xl font-bold mb-2">User Details</h2>
+              <div className='grid grid-cols-7 gap-4'>
+                <Input
+                  type="text"
+                  value={user?.username}
+                  disabled
+                  placeholder="Full Name"
+                  className="mb-2 col-span-3"
+                />
+                <Input
+                  type="email"
+                  value={user?.email}
+                  disabled
+                  placeholder="Email"
+                  className="mb-2 col-span-3"
+                />
+                <Button
+                  variant="outline"
+                  className="col-span-1"
+                  onClick={() => router.push('/profile')}
+                >
+                  Edit
+                </Button>
+              </div>
+            </div>
+
             {/* Shipping Address */}
             <div className="mb-4 space-y-1">
               <label className="block font-medium mb-1">Shipping Address</label>
